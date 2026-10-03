@@ -3,7 +3,7 @@
 (function () {
   var P = window.Peak;
 
-  // escuro e o padrao; claro so por escolha explicita (salva em localStorage)
+  // claro e o padrao; escuro so por escolha explicita (salva em localStorage)
   var btn = document.getElementById("theme-toggle");
   if (btn) {
     // icones em vez de emoji: emoji renderiza diferente por SO/fonte e
@@ -11,10 +11,10 @@
     var ICON_MOON = '<svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.3A8.4 8.4 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8Z"/></svg>';
     var ICON_SUN = '<svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.3"/><path d="M12 2.5v2.6M12 18.9v2.6M4.4 4.4l1.8 1.8M17.8 17.8l1.8 1.8M2.5 12h2.6M18.9 12h2.6M4.4 19.6l1.8-1.8M17.8 6.2l1.8-1.8"/></svg>';
     var apply = function (t) {
-      if (t === "light") document.documentElement.setAttribute("data-theme", "light");
-      else document.documentElement.removeAttribute("data-theme");
+      if (t === "dark") document.documentElement.removeAttribute("data-theme");
+      else document.documentElement.setAttribute("data-theme", "light");
       // o botao mostra PARA ONDE se vai, nao onde se esta
-      btn.innerHTML = t === "light" ? ICON_MOON : ICON_SUN;
+      btn.innerHTML = t === "dark" ? ICON_SUN : ICON_MOON;
     };
     try { apply(localStorage.getItem("peak-theme")); } catch (e) { apply(null); }
     btn.onclick = function () {
