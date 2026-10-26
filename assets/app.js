@@ -360,8 +360,10 @@
       // retangulos como estao desenhados no zoom atual.
       //
       // Num mapa, deslocar um marcador e mentir sobre a posicao do item — por
-      // isso o empurrao e limitado a MAX_SHIFT px de tela, e o que nao couber
-      // nesse limite e resolvido encolhendo, nao empurrando mais.
+      // isso o empurrao e limitado a MAX_SHIFT px de tela. O icone NUNCA encolhe
+      // (precisa ficar legivel no celular, onde a tela estreita cria muito mais
+      // sobreposicao que no desktop para o MESMO zoom); o que nao couber dentro
+      // do limite de empurrao fica parcialmente sobreposto.
       // O teto do empurrao acompanha o tamanho do marcador: um ponto de 13px sai
       // de cima do vizinho andando pouco, mas um icone de 26px precisa de quase
       // um diametro para se separar. Com um teto unico de 12px os icones grandes
@@ -432,19 +434,6 @@
           }
         }
 
-        // 1) densidade REAL: quantos vizinhos cada um de fato cobre
-        placed.forEach(function (p) { p.hits = 0; });
-        for (var k = 0; k < pairs.length; k += 2) {
-          var pa = placed[pairs[k]], pb = placed[pairs[k + 1]];
-          if (Math.abs(pb.x - pa.x) < pa.r + pb.r && Math.abs(pb.y - pa.y) < pa.r + pb.r) {
-            pa.hits++; pb.hits++;
-          }
-        }
-        placed.forEach(function (p) {
-          if (p.danger) return;                       // ja fixado em 11px
-          var s = p.hits >= 5 ? 13 : p.hits >= 3 ? 15 : p.hits >= 1 ? 17 : null;
-          if (s) { p.el.style.setProperty("--msize", s + "px"); p.r = (s + 4) / z / 2; }
-        });
         // teto de deslocamento por marcador, ja no espaco do inner
         placed.forEach(function (p) {
           p.lim = Math.max(MIN_SHIFT / z, p.r * 2 * SHIFT_PER_SIZE);
@@ -496,7 +485,8 @@
 
       // o zoom afasta os marcadores mas nao muda o tamanho deles na tela, entao
       // o que se cobria com zoom 1 deixa de se cobrir — sem refazer o calculo,
-      // eles ficavam encolhidos e deslocados a toa depois da aproximacao
+      // eles ficavam deslocados a toa (empurrados para resolver uma sobreposicao
+      // que o novo zoom ja desfez sozinho) depois da aproximacao
       self._relayout = layoutPass;
       if (img.complete && img.naturalHeight) requestAnimationFrame(layoutPass);
       else img.addEventListener("load", function () { requestAnimationFrame(layoutPass); });
